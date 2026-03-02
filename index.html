@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TOOLWIN AI - ULTIMATE v52</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --accent: #00f3ff; --danger: #ff0055; --gold: #ffd700; --dark: #0a0a0a; }
+        * { box-sizing: border-box; font-family: 'Rajdhani', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--dark); color: #fff; margin: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+
+        .app-shell { width: 100%; max-width: 420px; height: 100%; background: #000; display: flex; flex-direction: column; border: 1px solid #222; position: relative; }
+        
+        /* HEADER */
+        .header { padding: 12px 15px; display: none; justify-content: space-between; align-items: center; background: #111; border-bottom: 1px solid #333; }
+        .wallet { background: rgba(0, 243, 255, 0.1); border: 1px solid var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 13px; color: var(--accent); cursor: pointer; }
+
+        .screen { flex: 1; padding: 20px; display: none; flex-direction: column; overflow-y: auto; }
+        .screen.active { display: flex; }
+
+        /* LOGO ROBOT AI HIỆU ỨNG PULSE */
+        .logo-container { text-align: center; margin-bottom: 25px; margin-top: 20px; }
+        .logo-img { https://i.postimg.cc/PJGn7RLM/07fa38d5-8765-4e59-bb8e-58f89f5e4db4-jpg.jpg
+            width: 140px; height: 140px; border-radius: 50%; object-fit: cover;
+            border: 2px solid var(--accent); box-shadow: 0 0 20px var(--accent);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px var(--accent); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px var(--accent); }
+            100% { transform: scale(1); box-shadow: 0 0 15px var(--accent); }
+        }
+
+        /* AUTH FORMS */
+        .input-wrap { margin-bottom: 15px; position: relative; }
+        .input-wrap input { width: 100%; padding: 14px 14px 14px 45px; background: #1a1a1a; border: 1px solid #333; border-radius: 12px; color: #fff; outline: none; font-size: 16px; }
+        .input-wrap i { position: absolute; left: 15px; top: 16px; color: var(--accent); }
+        .btn-glow { width: 100%; padding: 15px; background: var(--accent); border: none; border-radius: 12px; font-family: 'Orbitron'; font-weight: 900; cursor: pointer; text-transform: uppercase; color: #000; box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); }
+
+        /* SẢNH CASINO */
+        .hall-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .hall-item { background: #111; border: 1px solid #222; padding: 20px 10px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.3s; }
+        .hall-item:hover { border-color: var(--accent); background: #151515; }
+        .hall-item i { font-size: 24px; color: var(--accent); margin-bottom: 8px; display: block; }
+        .hall-item b { font-size: 13px; letter-spacing: 1px; }
+
+        /* GAME AREA */
+        .ai-card { background: linear-gradient(180deg, #111, #000); padding: 20px; border-radius: 20px; border: 1px solid #222; text-align: center; margin-bottom: 15px; }
+        #ai-res { font-family: 'Orbitron'; font-size: 40px; font-weight: 900; margin: 10px 0; }
+        .score-box { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .score-box input { padding: 12px; background: #1a1a1a; border: 1px solid #333; color: #fff; text-align: center; border-radius: 10px; font-size: 20px; font-weight: bold; font-family: 'Orbitron'; }
+
+        /* CHAT BOX */
+        .chat-box { flex: 1; display: flex; flex-direction: column; background: #080808; border: 1px solid #222; border-radius: 15px; overflow: hidden; }
+        .chat-header { padding: 8px 15px; background: #151515; font-size: 11px; color: #555; border-bottom: 1px solid #222; font-weight: bold; }
+        #chat-content { flex: 1; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-size: 13px; }
+        .msg b { color: var(--accent); }
+        .chat-input { display: flex; padding: 8px; background: #111; gap: 8px; }
+        #chat-inp { flex: 1; background: #000; border: 1px solid #333; padding: 8px 15px; color: #fff; border-radius: 20px; outline: none; }
+        
+        .toast { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 10px 20px; border-radius: 30px; font-size: 12px; font-weight: bold; opacity: 0; transition: 0.3s; z-index: 1000; }
+        .toast.show { opacity: 1; bottom: 100px; }
+    </style>
+</head>
+<body>
+
+<div class="app-shell">
+    <div class="header" id="app-header">
+        <div style="font-family:'Orbitron'; font-weight:900; color:var(--accent);">TOOLWIN AI</div>
+        <div class="wallet" onclick="addMoney()"><i class="fa-solid fa-coins"></i> <span id="user-coins">0</span> Xu</div>
+    </div>
+
+    <div id="scr-login" class="screen active">
+        <div class="logo-container">
+            <img src="https://i.postimg.cc/85zK6L6M/ai-robot-3-10650714.jpg" class="logo-img" alt="AI Robot">
+        </div>
+        <h2 style="text-align:center; font-family:'Orbitron'; margin-bottom:30px;">SYSTEM LOGIN</h2>
+        <div class="input-wrap"><i class="fa-solid fa-user"></i><input type="text" id="l-u" placeholder="Tên tài khoản"></div>
+        <div class="input-wrap"><i class="fa-solid fa-lock"></i><input type="password" id="l-p" placeholder="Mật khẩu"></div>
+        <button class="btn-glow" onclick="doLogin()">KẾT NỐI NGAY</button>
+        <p style="text-align:center; font-size:14px; color:#555; margin-top:20px;" onclick="nav('scr-reg')">Chưa có tài khoản? <span style="color:var(--accent)">Đăng ký</span></p>
+    </div>
+
+    <div id="scr-reg" class="screen">
+        <h2 style="text-align:center; font-family:'Orbitron'; margin-top:40px; color:var(--danger);">REGISTER</h2>
+        <div class="input-wrap"><i class="fa-solid fa-user-plus"></i><input type="text" id="r-u" placeholder="Tên đăng nhập mới"></div>
+        <div class="input-wrap"><i class="fa-solid fa-key"></i><input type="password" id="r-p" placeholder="Mật khẩu bảo mật"></div>
+        <button class="btn-glow" style="background:var(--danger); color:#fff;" onclick="doRegister()">TẠO TÀI KHOẢN</button>
+        <p style="text-align:center; font-size:14px; color:#555; margin-top:20px;" onclick="nav('scr-login')">Đã có tài khoản? Đăng nhập</p>
+    </div>
+
+    <div id="scr-halls" class="screen">
+        <h3 style="color:var(--accent); margin-bottom:20px;">CHỌN SẢNH CASINO</h3>
+        <div class="hall-grid">
+            <div class="hall-item" onclick="nav('scr-game','SEXY')"><i class="fa-solid fa-venus"></i><b>SEXY</b></div>
+            <div class="hall-item" onclick="nav('scr-game','DG')"><i class="fa-solid fa-shield-cat"></i><b>DG</b></div>
+            <div class="hall-item" onclick="nav('scr-game','SA')"><i class="fa-solid fa-gem"></i><b>SA</b></div>
+            <div class="hall-item" onclick="nav('scr-game','AG')"><i class="fa-solid fa-crown"></i><b>AG</b></div>
+            <div class="hall-item" onclick="nav('scr-game','WM')"><i class="fa-solid fa-dice"></i><b>WM</b></div>
+            <div class="hall-item" onclick="nav('scr-game','EVO')"><i class="fa-solid fa-bolt"></i><b>EVO</b></div>
+            <div class="hall-item" onclick="nav('scr-game','MT')"><i class="fa-solid fa-microchip"></i><b>MT</b></div>
+            <div class="hall-item" onclick="nav('scr-game','CASINO')"><i class="fa-solid fa-building-columns"></i><b>CASINO</b></div>
+        </div>
+    </div>
+
+    <div id="scr-game" class="screen">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <i class="fa-solid fa-arrow-left" onclick="nav('scr-halls')" style="cursor:pointer;"></i>
+            <b id="hall-title" style="color:var(--accent); font-family:'Orbitron';">SEXY BCR</b>
+            <i class="fa-solid fa-signal" style="color:#00ff00; font-size:10px;"></i>
+        </div>
+
+        <div class="ai-card">
+            <div id="ai-res" style="color:#333;">READY</div>
+            <div style="font-size:11px; color:var(--gold); font-weight:bold;">WIN RATE: 98.8%</div>
+        </div>
+
+        <div class="score-box">
+            <input type="number" id="p_s" placeholder="P">
+            <input type="number" id="b_s" placeholder="B">
+        </div>
+        <button class="btn-glow" onclick="runAI()">PHÂN TÍCH ( -1 XU )</button>
+
+        <div class="chat-box" style="margin-top:15px;">
+            <div class="chat-header">PHÒNG CHAT GLOBAL</div>
+            <div id="chat-content"></div>
+            <div class="chat-input">
+                <input type="text" id="chat-inp" placeholder="Nhắn tin...">
+                <button onclick="sendChat()" style="background:var(--accent); border:none; padding:5px 12px; border-radius:15px; cursor:pointer;"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+</div>
+
+<script>
+    let db = JSON.parse(localStorage.getItem('tw_db_v52')) || [];
+    let chatHistory = JSON.parse(localStorage.getItem('tw_chat_v52')) || [];
+    let user = null;
+
+    function nav(id, title) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.getElementById('app-header').style.display = (id.includes('login') || id.includes('reg')) ? 'none' : 'flex';
+        if(title) {
+            document.getElementById('hall-title').innerText = title + " BCR";
+            loadChat();
+        }
+    }
+
+    function doRegister() {
+        const u = document.getElementById('r-u').value.trim();
+        const p = document.getElementById('r-p').value;
+        if(u.length < 3) return showToast("Tên quá ngắn!");
+        if(db.find(x => x.u === u)) return showToast("Tên đã tồn tại!");
+        db.push({ u: u, p: p, coins: 20 });
+        localStorage.setItem('tw_db_v52', JSON.stringify(db));
+        showToast("Đăng ký thành công! +20 Xu");
+        nav('scr-login');
+    }
+
+    function doLogin() {
+        const u = document.getElementById('l-u').value;
+        const p = document.getElementById('l-p').value;
+        const acc = db.find(x => x.u === u && x.p === p);
+        if(acc) {
+            user = acc;
+            document.getElementById('user-coins').innerText = user.coins;
+            nav('scr-halls');
+            showToast("Đăng nhập thành công!");
+        } else {
+            showToast("Sai tài khoản!");
+        }
+    }
+
+    function runAI() {
+        if(user.coins < 1) return showToast("Bạn đã hết xu!");
+        const p = document.getElementById('p_s').value;
+        const b = document.getElementById('b_s').value;
+        if(p === '' || b === '') return showToast("Nhập điểm ván trước!");
+        
+        user.coins -= 1;
+        document.getElementById('user-coins').innerText = user.coins;
+        const out = document.getElementById('ai-res');
+        out.innerText = "WAITING...";
+        
+        setTimeout(() => {
+            let res = (Math.abs(p-b) <= 2) ? (p>=b?"PLAYER":"BANKER") : (p>=b?"BANKER":"PLAYER");
+            out.innerText = res;
+            out.style.color = (res === "PLAYER") ? "var(--accent)" : "var(--danger)";
+            saveUser();
+            showToast("-1 Xu");
+        }, 1000);
+    }
+
+    function sendChat() {
+        const inp = document.getElementById('chat-inp');
+        if(!inp.value.trim()) return;
+        const msg = { u: user.u, m: inp.value.trim() };
+        chatHistory.push(msg);
+        if(chatHistory.length > 20) chatHistory.shift();
+        localStorage.setItem('tw_chat_v52', JSON.stringify(chatHistory));
+        inp.value = "";
+        loadChat();
+    }
+
+    function loadChat() {
+        const container = document.getElementById('chat-content');
+        container.innerHTML = chatHistory.map(msg => `<div class="msg"><b>${msg.u}:</b> ${msg.m}</div>`).join('');
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function addMoney() {
+        const code = prompt("NHẬP MÃ GIFTCODE:");
+        if(code === "TOOLWIN88") {
+            user.coins += 500;
+            document.getElementById('user-coins').innerText = user.coins;
+            saveUser();
+            showToast("Nạp +500 Xu thành công!");
+        }
+    }
+
+    function saveUser() {
+        const idx = db.findIndex(x => x.u === user.u);
+        db[idx] = user;
+        localStorage.setItem('tw_db_v52', JSON.stringify(db));
+    }
+
+    function showToast(m) {
+        const t = document.getElementById('toast');
+        t.innerText = m; t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
+</script>
+</body>
+                </html>
+            
